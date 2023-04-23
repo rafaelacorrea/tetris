@@ -7,8 +7,8 @@
 # General application configuration
 import Config
 
-config :tetris,
-  ecto_repos: [Tetris.Repo]
+# config :tetris,
+#   ecto_repos: [Tetris.Repo]
 
 # Configures the endpoint
 config :tetris, TetrisWeb.Endpoint,
