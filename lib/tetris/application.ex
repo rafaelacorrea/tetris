@@ -9,7 +9,7 @@ defmodule Tetris.Application do
   def start(_type, _args) do
     children = [
       # Start the Ecto repository
-      Tetris.Repo,
+      # Tetris.Repo,
       # Start the Telemetry supervisor
       TetrisWeb.Telemetry,
       # Start the PubSub system
