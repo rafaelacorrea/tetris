@@ -1,0 +1,51 @@
+name: Test and Deploy
+on: push
+
+jobs:
+  test: 
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        otp: [25.2.3]
+        elixir: [1.14.3]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: erlef/setup-beam@v1 
+      with: 
+        otp-version: ${{ matrix.otp }}
+        elixir-version: ${{ matrix.elixir }}
+        experimental-otp: true
+
+    - name: Setup Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14.16.0
+    - name: Install deps
+      run: |
+        mix deps.get
+        npm install --prefix assets
+        
+    - run: mix test
+  deploy:
+    needs: test
+    
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    
+    - uses: actions/checkout@v2
+      with:
+        ref: main
+        fetch-depth: 0
+    
+    - uses: actions/setup-python@v2
+      with: 
+        python-version: 3.11.1
+
+    - uses: mhanberg/gigalixir-action@v0.4.3
+      with:
+        GIGALIXIR_USERNAME: ${{ secrets.GIGALIXIR_USERNAME }}
+        GIGALIXIR_PASSWORD: ${{ secrets.GIGALIXIR_PASSWORD }}
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        GIGALIXIR_APP: ${{ secrets.GIGALIXIR_APP }}
+        MIGRATIONS: false
