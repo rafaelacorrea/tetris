@@ -4,6 +4,7 @@ defmodule TetrisWeb.GameLive do
 
   def mount(_params, _session, socket) do
     :timer.send_interval(500, :tick)
+
     {
       :ok,
       socket
@@ -28,7 +29,7 @@ defmodule TetrisWeb.GameLive do
     """
   end
 
-  def down(%{assigns: %{tetro: tetro}}=socket) do
+  def down(%{assigns: %{tetro: tetro}} = socket) do
     assign(socket, tetro: Tetromino.down(tetro))
   end
 
